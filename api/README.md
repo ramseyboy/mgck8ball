@@ -1,36 +1,31 @@
-# mgck8ball
+# magic8ball
 
-FIXME: description
+just toying around with Clojure / Postgres / Lucene / OpenNLP
 
-## Installation
+###dependencies
+```
+lein deps
+```
 
-Download from http://example.com/FIXME.
+### to start
+```
+cd api
+./create-db.sh # just uses a sqlite3 db for now
+lein ring server-headless
+```
 
-## Usage
+### usage
+```
+curl -G "http://localhost:3000/ask/" --data-urlencode "question=should I invest in gold?"
 
-FIXME: explanation
+# or just visit
+http://localhost:3000/ask?question=should I invest in gold?"
+```
 
-    $ java -jar mgck8ball-0.1.0-standalone.jar [args]
+```
+# to see all questions asked
+curl -G "http://localhost:3000/questions/"
 
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+# to see all answers
+curl -G "http://localhost:3000/answers/"
+```

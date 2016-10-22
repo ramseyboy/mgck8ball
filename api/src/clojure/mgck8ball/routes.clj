@@ -10,7 +10,9 @@
 
 (defroutes app-routes
            (GET "/" [] (views/root))
-           (GET "/qa" request (views/qa request))
+           (GET "/ask" request (views/ask request))
+           (GET "/answers" [] (views/answers))
+           (GET "/questions" [] (views/questions))
            (route/not-found "Not Found"))
 
 (def app

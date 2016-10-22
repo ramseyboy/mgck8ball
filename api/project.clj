@@ -9,7 +9,9 @@
                  [ring/ring-core "1.5.0"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-jetty-adapter "1.5.0"]
-                 [compojure "1.5.1"]]
+                 [compojure "1.5.1"]
+                 [korma "0.4.0"]
+                 [org.xerial/sqlite-jdbc "3.14.2.1"]]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler mgck8ball.routes/app}
   :main ^:skip-aot mgck8ball.routes

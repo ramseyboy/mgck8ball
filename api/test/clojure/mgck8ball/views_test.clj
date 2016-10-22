@@ -1,4 +1,4 @@
-(ns mgck8ball.views-test
+(ns mgck8ball.views_test
   (:require [clojure.test :refer :all]
             [mgck8ball.routes :refer :all]))
 

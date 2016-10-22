@@ -10,5 +10,4 @@
 (defn retreive-answer
   "get answer"
   [question?]
-  (let [answer (answer question?)]
-    {:question question? :answer answer}))
+  (answer question?))
