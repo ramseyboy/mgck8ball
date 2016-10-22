@@ -1,0 +1,5 @@
+.idea/
+src/
+target/*
+*.iml
+resources/public/js/app.js
