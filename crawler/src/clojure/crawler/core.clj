@@ -38,4 +38,4 @@
   []
   (let [robots-file (io/file (io/resource "robots/usa-robots.txt"))]
     (let [robots-str (.readUtf8 (Okio/buffer (Okio/source robots-file)))]
-      (robots/parse robots-str))))
+      (println (robots/parse robots-str)))))
