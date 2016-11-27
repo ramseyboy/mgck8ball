@@ -2,6 +2,7 @@ package crawler;
 
 import okhttp3.HttpUrl;
 import okhttp3.Response;
+import okio.Okio;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -11,6 +12,7 @@ import org.apache.tika.sax.TeeContentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
