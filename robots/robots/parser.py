@@ -1,15 +1,6 @@
 import os.path
 
 
-class UserAgent:
-    def __init__(self, user_agent, disallows):
-        self.user_agent = user_agent
-        self.disallows = disallows
-
-        # def __str__(self):
-        #     return "foo"
-
-
 class Robot:
     def __init__(self, user_agents, site_maps):
         self.user_agents = user_agents
@@ -21,7 +12,14 @@ class Robot:
     __repr__ = __str__
 
 
-class Parser:
+class _ParserState:
+    def __init__(self, state, val):
+        self.state = state
+        self.val = val
+
+
+class _ParserStateMachine:
+    # States
     __USER_AGENT = "user-agent"
     __ALLOW = "allow"
     __DISALLOW = "disallow"
@@ -31,9 +29,8 @@ class Parser:
     __VISIT_TIME = "visit-time"
     __SITEMAP = "sitemap"
 
-    def __init__(self, input_file):
-        self.input_seq = self.__filter(input_file)
-
+    def __init__(self):
+        self.cur_state = None
         self.directives = [self.__USER_AGENT,
                            self.__ALLOW,
                            self.__DISALLOW,
@@ -42,6 +39,39 @@ class Parser:
                            self.__ROBOT_VERSION,
                            self.__VISIT_TIME,
                            self.__SITEMAP]
+
+        self.user_agents = {}
+        self.site_maps = []
+
+        self.cur_user_agent = None
+        self.cur_user_agent_disallows = []
+
+    def current_state(self):
+        return self.cur_state
+
+    def next_state(self, state: _ParserState):
+        self.cur_state = state
+
+        if state.state == self.__USER_AGENT:
+            cur_user_agent = state.val
+            if cur_user_agent is not None:
+                self.user_agents[cur_user_agent] = self.cur_user_agent_disallows
+                self.cur_user_agent_disallows.clear()
+
+        elif state.state == self.__DISALLOW:
+            self.cur_user_agent_disallows.append(state.val)
+
+        elif state.state == self.__SITEMAP:
+            self.site_maps.append(state.val)
+
+    def robot(self):
+        return Robot(self.user_agents, self.site_maps)
+
+
+class Parser:
+    def __init__(self, input_file):
+        self.input_seq = self.__filter(input_file)
+        self.state_machine = _ParserStateMachine()
 
     @staticmethod
     def __filter(input_file):
@@ -64,28 +94,11 @@ class Parser:
         return line.lower().split(":", 1)
 
     def parse(self):
-
-        user_agents = {}
-        site_maps = []
-
-        cur_user_agent = None
-        cur_user_agent_disallows = []
         for line in self.input_seq:
-            (key, val) = self.__split(line)
+            (state, val) = self.__split(line)
+            self.state_machine.next_state(_ParserState(state, val))
 
-            if key == self.__USER_AGENT:
-                cur_user_agent = val
-                if cur_user_agent is not None:
-                    user_agents[cur_user_agent] = cur_user_agent_disallows
-                    cur_user_agent_disallows.clear()
-
-            elif key == self.__DISALLOW:
-                cur_user_agent_disallows.append(val)
-
-            elif key == self.__SITEMAP:
-                site_maps.append(val)
-
-        return Robot(user_agents, site_maps)
+        return self.state_machine.robot()
 
 
 if __name__ == '__main__':
@@ -93,6 +106,5 @@ if __name__ == '__main__':
     robots_path = os.path.join(resource_path, "usa-robots.txt")
 
     robots = open(robots_path, 'r')
-
     robot = Parser(robots).parse()
     print(robot)
